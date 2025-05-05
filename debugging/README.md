@@ -320,6 +320,195 @@ print(f)
 
 ```
 ### ChatGPT Degugging :
-**See file factorial_recursive.py **
+**See file factorial_recursive.py**
 
-``````
+Here's the properly commented and indented version of factorial_recursive.py, with clear documentation for the function including a description, parameters, and return value.
+
+```
+
+#!/usr/bin/python3
+import sys
+
+def factorial(n):
+    """
+    Calculate the factorial of a non-negative integer using recursion.
+
+    Parameters:
+        n (int): A non-negative integer whose factorial is to be computed.
+
+    Returns:
+        int: The factorial of the input integer n. Returns 1 if n is 0.
+    """
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n - 1)
+
+# Read the first command-line argument, convert it to an integer, and compute its factorial
+
+f = factorial(int(sys.argv[1]))
+print(f)
+
+```
+🔧 Fixes Made
+Fixed indentation: The if block was misaligned and would raise an IndentationError.
+
+Added a docstring to factorial() explaining:
+
+What it does.
+
+Its parameter (n) and the type expected.
+
+What it returns, and under which condition.
+
+
+## Task 5
+
+### given code 
+```
+class Checkbook:
+    def __init__(self):
+        self.balance = 0.0
+
+    def deposit(self, amount):
+        self.balance += amount
+        print("Deposited ${:.2f}".format(amount))
+        print("Current Balance: ${:.2f}".format(self.balance))
+
+    def withdraw(self, amount):
+        if amount > self.balance:
+            print("Insufficient funds to complete the withdrawal.")
+        else:
+            self.balance -= amount
+            print("Withdrew ${:.2f}".format(amount))
+            print("Current Balance: ${:.2f}".format(self.balance))
+
+    def get_balance(self):
+        print("Current Balance: ${:.2f}".format(self.balance))
+
+def main():
+    cb = Checkbook()
+    while True:
+        action = input("What would you like to do? (deposit, withdraw, balance, exit): ")
+        if action.lower() == 'exit':
+            break
+        elif action.lower() == 'deposit':
+            amount = float(input("Enter the amount to deposit: $"))
+            cb.deposit(amount)
+        elif action.lower() == 'withdraw':
+            amount = float(input("Enter the amount to withdraw: $"))
+            cb.withdraw(amount)
+        elif action.lower() == 'balance':
+            cb.get_balance()
+        else:
+            print("Invalid command. Please try again.")
+
+if __name__ == "__main__":
+    main()
+
+```
+### ChatGPT Degugging :
+**See file checkbook.py**
+
+You're encountering a ValueError because the program tries to convert non-numeric input (like "test") into a float without checking if it's valid. The solution is to wrap the input conversion in a try-except block to catch such errors and prompt the user again.
+
+✅ Changes Made
+Wrapped float(input(...)) inside try-except to catch non-numeric values.
+
+Added amount <= 0 check to avoid depositing or withdrawing invalid (e.g., negative) amounts.
+
+Ensured the program does not crash and instead prints a helpful message and continues.
+
+You can now safely test it:
+
+```
+bash
+$ ./checkbook.py
+What would you like to do? (deposit, withdraw, balance, exit): deposit
+Enter the amount to deposit: $test
+Invalid amount. Please enter a numeric value.
+```
+
+
+## Task 6
+
+### given code 
+```
+def print_board(board):
+    for row in board:
+        print(" | ".join(row))
+        print("-" * 5)
+
+def check_winner(board):
+    for row in board:
+        if row.count(row[0]) == len(row) and row[0] != " ":
+            return True
+
+    for col in range(len(board[0])):
+        if board[0][col] == board[1][col] == board[2][col] and board[0][col] != " ":
+            return True
+
+    if board[0][0] == board[1][1] == board[2][2] and board[0][0] != " ":
+        return True
+
+    if board[0][2] == board[1][1] == board[2][0] and board[0][2] != " ":
+        return True
+
+    return False
+
+def tic_tac_toe():
+    board = [[" "]*3 for _ in range(3)]
+    player = "X"
+    while not check_winner(board):
+        print_board(board)
+        row = int(input("Enter row (0, 1, or 2) for player " + player + ": "))
+        col = int(input("Enter column (0, 1, or 2) for player " + player + ": "))
+        if board[row][col] == " ":
+            board[row][col] = player
+            if player == "X":
+                player = "O"
+            else:
+                player = "X"
+        else:
+            print("That spot is already taken! Try again.")
+
+    print_board(board)
+    print("Player " + player + " wins!")
+
+tic_tac_toe()
+```
+
+### ChatGPT Degugging :
+**See file tic.py**
+Tic Tac Toe implementation is close, but it has several issues, especially in how it:
+
+- Handles game end: The winner message prints the wrong player.
+
+- Does not handle invalid inputs: No checks for out-of-range or non-integer input.
+
+- Doesn't check for a draw: Game can go on forever even when the board is full.
+
+- Could be made cleaner: Some logic like player switching can be simplified.
+  
+#### 🔧 Fixes and Improvements
+
+| Issue                       | Fix                                                             |
+|----------------------------|------------------------------------------------------------------|
+| ❌ Wrong winner printed     | Tracked winner and printed the correct one                      |
+| ❌ No input validation      | Wrapped input in `try-except`, checked bounds                   |
+| ❌ No draw condition        | Added `is_full()` to detect a full board                        |
+|  ❌Repeated player switching logic | Replaced with cleaner ternary: `current_player = "O" if ...` |
+
+🧪 Example Game Output
+```
+   |   |  
+-----------
+   |   |  
+-----------
+   |   |  
+Enter row (0, 1, or 2) for player X: 0
+Enter column (0, 1, or 2) for player X: 0
+...
+Player X wins!
+
+```
